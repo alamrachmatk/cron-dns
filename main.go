@@ -3,6 +3,8 @@ package main
 import (
 	"bufio"
 	"dns/config"
+	"dns/db"
+	"dns/models"
 	"log"
 	"os"
 	"path/filepath"
@@ -15,6 +17,9 @@ import (
 )
 
 func main() {
+	// Initialize main database
+	db.Db = db.MariaDBInit()
+
 	gocron.Every(1).Seconds().Do(LogDns)
 
 	<-gocron.Start()
@@ -27,64 +32,83 @@ func LogDns() {
 	err := filepath.Walk(root, visit(&files))
 	if err != nil {
 		log.Println(err)
-	}
-	for a, getFile := range files {
-		if a != 0 {
-			file, err := os.Open(config.DnsLog + filepath.Base(getFile)) // For read access.
-			partsFilename := strings.Split(file.Name(), "_")
-			partsDate := strings.Split(partsFilename[2], "-")
-			//get date
-			date := partsDate[2] + "-" + partsDate[1] + "-" + partsDate[0]
-			checkQuestion := "question for '"
-			if err != nil {
-				log.Fatal(err)
-			}
-			scanner := bufio.NewScanner(file)
-			scanner.Split(bufio.ScanLines)
-			var txtlines []string
+	} else {
+		for a, getFile := range files {
+			if a != 0 {
+				file, err := os.Open(config.DnsLog + filepath.Base(getFile)) // For read access.
+				partsFilename := strings.Split(file.Name(), "_")
+				partsDate := strings.Split(partsFilename[2], "-")
+				//get date
+				date := partsDate[2] + "-" + partsDate[1] + "-" + partsDate[0]
+				checkQuestion := "question for '"
+				if err != nil {
+					log.Fatal(err)
+				}
+				scanner := bufio.NewScanner(file)
+				scanner.Split(bufio.ScanLines)
+				var txtlines []string
 
-			for scanner.Scan() {
-				txtlines = append(txtlines, scanner.Text())
-			}
+				for scanner.Scan() {
+					txtlines = append(txtlines, scanner.Text())
+				}
 
-			file.Close()
+				file.Close()
 
-			var ipAddress string
-			var domain string
-			var baseDomain string
-			var time string
-			var dateTime string
-			for _, eachline := range txtlines {
-				if strings.Contains(eachline, checkQuestion) {
-					splitTime := strings.Split(eachline, " ")
-					time = splitTime[2]
-					result := strings.SplitAfter(eachline, checkQuestion)
-					for i := range result {
-						if i == 1 {
-							dateTime = date + " " + time
-							rep := strings.ReplaceAll(result[1], ".|A' from ", "|")
-							rep2 := strings.ReplaceAll(rep, ".|AAAA' from ", "|")
-							rep3 := strings.ReplaceAll(rep2, ".|TYPE65' from ", "|")
-							parts := strings.Split(rep3, "|")
-							// get ip addreess & domain & basedomain
-							for i := range parts {
-								if i == 0 {
-									domain = parts[0]
-									baseDomain = domainutil.Domain(domain)
-									log.Println("HasSubdomain: ", domainutil.HasSubdomain(domain))
+				var ipAddress string
+				var domain string
+				var baseDomain string
+				var hasSubDomain string
+				var time string
+				var dateTime string
+				params := make(map[string]string)
+				for _, eachline := range txtlines {
+					if strings.Contains(eachline, checkQuestion) {
+						splitTime := strings.Split(eachline, " ")
+						time = splitTime[3]
+						result := strings.SplitAfter(eachline, checkQuestion)
+						for i := range result {
+							if i == 1 {
+								dateTime = date + " " + time
+								var partDomain, partAfterDomain string
+								if i := strings.Index(result[1], ".|"); i >= 0 {
+									partDomain, partAfterDomain = result[1][:i], result[1][i:]
 								}
-								if i == 0 {
-									ipAddress = parts[1]
+								partIP := strings.Split(partAfterDomain, "from ")
+								rep := partDomain + "|" + partIP[1]
+								parts := strings.Split(rep, "|")
+								// get ip addreess & domain & basedomain
+								for i := range parts {
+									if i == 0 {
+										domain = parts[0]
+										baseDomain = domainutil.Domain(domain)
+										if baseDomain == "" {
+											baseDomain = domain
+										}
+										if domainutil.HasSubdomain(domain) == true {
+											hasSubDomain = "1"
+										} else {
+											hasSubDomain = "0"
+										}
+									}
+									if i == 0 {
+										ipAddress = parts[1]
+									}
+								}
+								params["domain"] = domain
+								params["base_domain"] = baseDomain
+								params["ip_address"] = ipAddress
+								params["has_subdomain"] = hasSubDomain
+								params["log_datetime"] = dateTime
+								statusResponse, err := models.CreateDns(params)
+								if statusResponse != 200 {
+									log.Println(err)
 								}
 							}
-							log.Println("IP Address: ", ipAddress)
-							log.Println("Domain: ", domain)
-							log.Println("Base Domain: ", baseDomain)
-							log.Println("Date Time: ", dateTime)
 						}
-					}
 
+					}
 				}
+				return
 			}
 		}
 	}

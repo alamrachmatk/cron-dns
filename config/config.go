@@ -13,5 +13,5 @@ const (
 	RedisHost string = "localhost"
 	RedisPort string = "6379"
 
-	DnsLog string = "E:\\scptemp\\sample\\"
+	DnsLog string = "/var/www/html/dnslog/"
 )

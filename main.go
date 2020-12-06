@@ -27,6 +27,8 @@ func main() {
 
 func LogDns() {
 
+	log.Println("TEST")
+	return
 	var files []string
 	root := config.DnsLog
 	err := filepath.Walk(root, visit(&files))
@@ -35,6 +37,7 @@ func LogDns() {
 	} else {
 		for a, getFile := range files {
 			if a != 0 {
+				log.Println("base: ", filepath.Base(getFile))
 				file, err := os.Open(config.DnsLog + filepath.Base(getFile)) // For read access.
 				partsFilename := strings.Split(file.Name(), "_")
 				partsDate := strings.Split(partsFilename[2], "-")

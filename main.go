@@ -9,11 +9,18 @@ import (
 	"strings"
 
 	"github.com/bobesa/go-domain-util/domainutil"
+	"github.com/jasonlvhit/gocron"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
+	gocron.Every(1).Seconds().Do(LogDns)
+
+	<-gocron.Start()
+}
+
+func LogDns() {
 
 	var files []string
 	root := config.DnsLog

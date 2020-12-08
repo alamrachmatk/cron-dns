@@ -11,19 +11,18 @@ import (
 	"strings"
 
 	"github.com/bobesa/go-domain-util/domainutil"
+	"github.com/jasonlvhit/gocron"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
-
 	// Initialize main database
 	db.Db = db.MariaDBInit()
 
-	// gocron.Every(1).Seconds().Do(LogDns)
+	gocron.Every(1).Seconds().Do(LogDns)
 
-	// <-gocron.Start()
-	log.Println("TES DNS FILTER")
+	<-gocron.Start()
 }
 
 func LogDns() {

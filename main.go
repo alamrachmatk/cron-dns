@@ -27,7 +27,7 @@ func main() {
 
 func LogDns() {
 
-	log.Println("TEST")
+	log.Println("TEST DNS FILTER")
 	return
 	var files []string
 	root := config.DnsLog

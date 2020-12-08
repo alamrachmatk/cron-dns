@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"dns/config"
+	"dns/db"
 	"dns/models"
 	"log"
 	"os"
@@ -15,13 +16,14 @@ import (
 )
 
 func main() {
-	log.Println("TES DNS FILTER")
+
 	// Initialize main database
-	// db.Db = db.MariaDBInit()
+	db.Db = db.MariaDBInit()
 
 	// gocron.Every(1).Seconds().Do(LogDns)
 
 	// <-gocron.Start()
+	log.Println("TES DNS FILTER")
 }
 
 func LogDns() {

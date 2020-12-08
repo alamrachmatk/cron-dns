@@ -1,7 +1,7 @@
 package config
 
 const (
-	Host       string = "http://localhost:1323"
+	Host       string = "qdnsfilter.quantum.net.id"
 	LimitQuery uint64 = 100
 
 	MariaDBUser     string = "root"

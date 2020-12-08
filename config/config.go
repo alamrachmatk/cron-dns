@@ -7,7 +7,7 @@ const (
 	MariaDBUser     string = "dnsfilter"
 	MariaDBPassword string = "rahasiadns"
 	MariaDBDB       string = "dnsfilter"
-	MariaDBHost     string = "175.106.8.71"
+	MariaDBHost     string = "175.106.8.72"
 	MariaDBPort     string = "3306"
 
 	RedisHost string = "localhost"

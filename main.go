@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"dns/config"
-	"dns/db"
 	"dns/models"
 	"log"
 	"os"
@@ -11,18 +10,18 @@ import (
 	"strings"
 
 	"github.com/bobesa/go-domain-util/domainutil"
-	"github.com/jasonlvhit/gocron"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
+	log.Println("TES DNS FILTER")
 	// Initialize main database
-	db.Db = db.MariaDBInit()
+	// db.Db = db.MariaDBInit()
 
-	gocron.Every(1).Seconds().Do(LogDns)
+	// gocron.Every(1).Seconds().Do(LogDns)
 
-	<-gocron.Start()
+	// <-gocron.Start()
 }
 
 func LogDns() {

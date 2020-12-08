@@ -7,7 +7,7 @@ const (
 	MariaDBUser     string = "root"
 	MariaDBPassword string = ""
 	MariaDBDB       string = "kumparan_test"
-	MariaDBHost     string = "localhost"
+	MariaDBHost     string = "qdnsfilter.quantum.net.id"
 	MariaDBPort     string = "3306"
 
 	RedisHost string = "localhost"

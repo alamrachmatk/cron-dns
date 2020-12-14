@@ -36,6 +36,7 @@ func LogDns() {
 		for a, getFile := range files {
 			if a != 0 {
 				fileName := config.DnsLog + filepath.Base(getFile)
+				log.Println("open file: ", filepath.Base(getFile))
 				var extension = filepath.Ext(fileName)
 				if extension != ".filepart" {
 					file, err := os.Open(fileName) // For read access.
@@ -116,6 +117,7 @@ func LogDns() {
 					if e != nil {
 						log.Println(e)
 					}
+					return
 				}
 			}
 		}

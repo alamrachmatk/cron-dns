@@ -73,7 +73,6 @@ func LogDns() {
 							for i := range result {
 								if i == 1 {
 									dateTime = date + " " + time
-									log.Println("TIME CUY ", time)
 									var partDomain, partAfterDomain string
 									if i := strings.Index(result[1], ".|"); i >= 0 {
 										partDomain, partAfterDomain = result[1][:i], result[1][i:]

@@ -20,7 +20,7 @@ func main() {
 	// Initialize main database
 	db.Db = db.MariaDBInit()
 
-	gocron.Every(5).Seconds().Do(LogDns)
+	gocron.Every(1).Minute().Do(LogDns)
 
 	<-gocron.Start()
 }

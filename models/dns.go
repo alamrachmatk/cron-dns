@@ -34,6 +34,7 @@ func CreateDns(params map[string]string) (int, int64) {
 	result, err := tx.Exec(query)
 	if err != nil {
 		log.Println(err)
+	}
 
 	lastID, err = result.LastInsertId()
 	tx.Commit()

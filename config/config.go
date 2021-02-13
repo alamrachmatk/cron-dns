@@ -5,7 +5,7 @@ const (
 	LimitQuery uint64 = 100
 
 	MariaDBUser     string = "root"
-	MariaDBPassword string = "root@qdns"
+	MariaDBPassword string = "quantum"
 	MariaDBDB       string = "quantumdns"
 	MariaDBHost     string = "localhost"
 	MariaDBPort     string = "3306"

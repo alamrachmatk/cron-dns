@@ -68,7 +68,7 @@ func LogDns() {
 					for _, eachline := range txtlines {
 						if strings.Contains(eachline, checkQuestion) {
 							splitTime := strings.Split(eachline, " ")
-							time = splitTime[2]
+							time = splitTime[3]
 							result := strings.SplitAfter(eachline, checkQuestion)
 							for i := range result {
 								if i == 1 {

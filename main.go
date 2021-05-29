@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/bobesa/go-domain-util/domainutil"
 	"github.com/jasonlvhit/gocron"
@@ -62,17 +63,17 @@ func LogDns() {
 					var domain string
 					var baseDomain string
 					var hasSubDomain string
-					var time string
+					var logTime string
 					var dateTime string
 					params := make(map[string]string)
 					for _, eachline := range txtlines {
 						if strings.Contains(eachline, checkQuestion) {
 							splitTime := strings.Split(eachline, " ")
-							time = splitTime[2]
+							logTime = splitTime[2]
 							result := strings.SplitAfter(eachline, checkQuestion)
 							for i := range result {
 								if i == 1 {
-									dateTime = date + " " + time
+									dateTime = date + " " + logTime
 									currentTime := time.Now()
 									dateNow := currentTime.Format("2006-01-02")
 									if date == dateNow {

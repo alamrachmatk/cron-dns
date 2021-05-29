@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/bobesa/go-domain-util/domainutil"
 	"github.com/jasonlvhit/gocron"
@@ -73,39 +74,45 @@ func LogDns() {
 							for i := range result {
 								if i == 1 {
 									dateTime = date + " " + time
-									var partDomain, partAfterDomain string
-									if i := strings.Index(result[1], ".|"); i >= 0 {
-										partDomain, partAfterDomain = result[1][:i], result[1][i:]
-									}
-									partIP := strings.Split(partAfterDomain, "from ")
-									rep := partDomain + "|" + partIP[1]
-									parts := strings.Split(rep, "|")
-									// get ip addreess & domain & basedomain
-									for i := range parts {
-										if i == 0 {
-											domain = parts[0]
-											baseDomain = domainutil.Domain(domain)
-											if baseDomain == "" {
-												baseDomain = domain
+									currentTime := time.Now()
+									dateNow := currentTime.Format("2006-01-02")
+									if date == dateNow {
+										var partDomain, partAfterDomain string
+										if i := strings.Index(result[1], ".|"); i >= 0 {
+											partDomain, partAfterDomain = result[1][:i], result[1][i:]
+										}
+										partIP := strings.Split(partAfterDomain, "from ")
+										rep := partDomain + "|" + partIP[1]
+										parts := strings.Split(rep, "|")
+										// get ip addreess & domain & basedomain
+										for i := range parts {
+											if i == 0 {
+												domain = parts[0]
+												baseDomain = domainutil.Domain(domain)
+												if baseDomain == "" {
+													baseDomain = domain
+												}
+												if domainutil.HasSubdomain(domain) == true {
+													hasSubDomain = "1"
+												} else {
+													hasSubDomain = "0"
+												}
 											}
-											if domainutil.HasSubdomain(domain) == true {
-												hasSubDomain = "1"
-											} else {
-												hasSubDomain = "0"
+											if i == 0 {
+												ipAddress = parts[1]
 											}
 										}
-										if i == 0 {
-											ipAddress = parts[1]
+										params["domain"] = domain
+										params["base_domain"] = baseDomain
+										params["ip_address"] = ipAddress
+										params["has_subdomain"] = hasSubDomain
+										params["log_datetime"] = dateTime
+										statusResponse, err := models.CreateDns(params)
+										if statusResponse != 200 {
+											log.Println(err)
 										}
-									}
-									params["domain"] = domain
-									params["base_domain"] = baseDomain
-									params["ip_address"] = ipAddress
-									params["has_subdomain"] = hasSubDomain
-									params["log_datetime"] = dateTime
-									statusResponse, err := models.CreateDns(params)
-									if statusResponse != 200 {
-										log.Println(err)
+									} else {
+										return
 									}
 								}
 							}

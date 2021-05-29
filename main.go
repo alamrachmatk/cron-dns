@@ -9,7 +9,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/bobesa/go-domain-util/domainutil"
 	"github.com/jasonlvhit/gocron"

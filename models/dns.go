@@ -9,7 +9,7 @@ import (
 )
 
 func CreateDns(params map[string]string) (int, int64) {
-	query := "INSERT INTO dns("
+	query := "INSERT INTO dns_prod("
 	var fields = ""
 	var values = ""
 	i := 0
@@ -24,7 +24,7 @@ func CreateDns(params map[string]string) (int, int64) {
 	}
 
 	query += fields + ", created_at) VALUES(" + values + ", NOW())"
-	log.Println(query)
+	//log.Println(query)
 	tx, err := db.Db.Begin()
 	var lastID int64
 	if err != nil {

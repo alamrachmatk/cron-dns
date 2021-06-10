@@ -70,6 +70,9 @@ func LogDns() {
 						if strings.Contains(eachline, checkQuestion) {
 							splitTime := strings.Split(eachline, " ")
 							logTime = splitTime[3]
+							if logTime == "riverbed02" || logTime == "dell" {
+								logTime = splitTime[2]
+							}
 							result := strings.SplitAfter(eachline, checkQuestion)
 							for i := range result {
 								if i == 1 {
